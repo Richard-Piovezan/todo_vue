@@ -1,5 +1,8 @@
 <script setup>
 import { reactive } from 'vue';
+import Cabecalho from './components/Cabecalho.vue';
+import Formulario from './components/Formulario.vue';
+import ListaDeTarefas from './components/ListaDeTarefas.vue';
 
 const estado = reactive({
   tarefas: [
@@ -60,29 +63,9 @@ const cadastraTarefa = () => {
 
 <template>
   <div class="container">
-    <header>
-      <h1>Minhas Tarefas</h1>
-      <p>
-        Você possui {{ getTarefasPendentes().length }} tarefas pendentes
-      </p>
-    </header>
-    <form @submit.prevent="cadastraTarefa()">
-      <input :value="estado.tarefaTemporaria" @change="e => estado.tarefaTemporaria = e.target.value" type="text" placeholder="Digite aqui a descrição da nova tarefa" required>
-      <button type="submit">Cadastrar</button>
-      <select @change="e => estado.filtro = e.target.value">
-        <option value="todas">Todas tarefas</option>
-        <option value="pendentes">Pendentes</option>
-        <option value="finalizadas">Finalizadas</option>
-      </select>
-    </form>
-    <ul>
-      <li v-for="tarefa in getTarefasFiltradas()">
-        <input @change="e => tarefa.finalizada = e.target.checked" :checked="tarefa.finalizada" :id="tarefa.titulo" type="checkbox">
-        <label :class="{ done: tarefa.finalizada === true }" :for="tarefa.titulo">
-          {{ tarefa.titulo }}
-        </label>
-      </li>
-    </ul>
+    <Cabecalho :tarefas-pendentes="getTarefasPendentes().length"/>
+    <Formulario :tarefa-temp="estado.tarefaTemporaria" :edita-tarefa-temp="e => estado.tarefaTemporaria = e.target.value" :cadastrar-tarefa="cadastraTarefa" :trocar-filtro="e => estado.filtro = e.target.value" />
+    <ListaDeTarefas :tarefas="getTarefasFiltradas()" />
   </div>
 </template>
 
@@ -118,59 +101,7 @@ const cadastraTarefa = () => {
     margin-bottom: 12px;
   }
 
-  button, select {
-    border-radius: 6px;
-    cursor: pointer;
-  }
-
-  form {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 80% 8% 8%;
-    gap: 2%;
-  }
-
-  form input {
-    height: 36px;
-    border-radius: 8px;
-    border: 1px solid #cdcdcd;
-    text-indent: 12px;
-    font-size: 16px;
-  }
-
-  form button {
-    background-color: #5079ff;
-    border: none;
-    color: #fff;
-    font-weight: 100;
-    transition: .3s;
-  } form button:hover {
-    background-color: #5079ffc5;
-  }
-
-  form select {
-    border: 1px solid #cdcdcd;
-  }
-
   ul {
     margin-top: 30px;
-  }
-  
-  ul li {
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    border-radius: 6px;
-    border: 1px solid #cdcdcd;
-    font-size: 15px;
-    margin-bottom: 8px;
-  }
-
-  ul li label {
-    margin-left: 12px;
-  }
-
-  .done {
-    text-decoration: line-through;
-  }
+    }
 </style>
